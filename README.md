@@ -98,6 +98,15 @@ pricing/
 └── LICENSING.md                   # Términos de licencia
 ```
 
+### 7. **Módulo Shopify** 🛍️
+```
+shopify/
+├── SHOPIFY_APIS.md                # Integración con APIs de Shopify (Storefront, Admin, Webhooks)
+├── SHOPIFY_GLOBALIZATION.md       # Guía de Localización y Globalización con Shopify Markets
+├── SHOPIFY_CODE_EXAMPLES.md       # Ejemplos de Código Específicos para Shopify (GraphQL, Liquid, Webhooks)
+└── SHOPIFY_GLOBAL_CASE_STUDIES_SEO.md # Casos de Estudio Globales y Guía de SEO Internacional
+```
+
 ---
 
 ## 💰 Planes de Precios
@@ -341,7 +350,7 @@ Este contenido está protegido por licencia propietaria. Ver `LICENSE.md` para d
 
 ### Q3 2026
 - 📋 Plantillas de componentes adicionales
-- 📋 Integración con Shopify
+- ✅ Integración profunda con Shopify (APIs, Liquid, Hydrogen, Markets)
 - 📋 Guía de SEO para e-commerce
 
 ### Q4 2026
