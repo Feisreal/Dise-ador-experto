@@ -264,7 +264,7 @@ git push heroku main
 ## 📞 Soporte
 
 Para ayuda:
-- Email: support@feiss.dev
+- Email: feispla@hotmail.com
 - Documentación: https://feiss.dev/docs
 - Chat: https://chat.feiss.dev
 

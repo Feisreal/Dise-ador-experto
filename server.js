@@ -305,7 +305,7 @@ function generateEmailTemplate(name, plan, price, purchaseDate) {
                     <a href="https://feiss.dev/dashboard" class="button">Ir a Mi Cuenta</a>
 
                     <div class="footer">
-                        <p>Si tienes preguntas, contacta a <strong>support@feiss.dev</strong></p>
+                        <p>Si tienes preguntas, contacta a <strong>feispla@hotmail.com</strong></p>
                         <p>&copy; 2026 FEISS. Todos los derechos reservados.</p>
                     </div>
                 </div>
