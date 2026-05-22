@@ -316,7 +316,7 @@ Empresa RetailCo quiere transformar su negocio a digital.
 - Recomendado para: Compromiso a largo plazo
 
 ### Planes Corporativos
-- Contactar a sales@feiss.dev
+- Contactar a feispla@hotmail.com
 - Presupuestos personalizados
 - Términos de pago flexibles
 - Descuentos por volumen

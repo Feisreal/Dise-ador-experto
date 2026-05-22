@@ -328,7 +328,7 @@ Este contenido está protegido por licencia propietaria. Ver `LICENSE.md` para d
 ## 📞 Soporte y Contacto
 
 ### Canales de Soporte
-- **Email:** support@feiss.dev
+- **Email:** feispla@hotmail.com
 - **Chat:** chat.feiss.dev
 - **Teléfono:** +1 (555) 123-4567
 - **Comunidad:** community.feiss.dev
@@ -392,7 +392,7 @@ Este contenido está protegido por licencia propietaria. Ver `LICENSE.md` para d
 
 ## 🤝 Contribuciones
 
-Este es un producto propietario. Las contribuciones no son aceptadas en este momento. Si tienes sugerencias, contacta a support@feiss.dev
+Este es un producto propietario. Las contribuciones no son aceptadas en este momento. Si tienes sugerencias, contacta a feispla@hotmail.com
 
 ---
 
