@@ -1,0 +1,190 @@
+{
+  "account_id": "YOUR_CLOUDFLARE_ACCOUNT_ID",
+  "zone_id": "YOUR_CLOUDFLARE_ZONE_ID",
+  "domain": "feispla.vercel.app",
+  
+  "security": {
+    "ssl_tls": {
+      "ssl_mode": "full",
+      "always_use_https": true,
+      "min_tls_version": "1.2",
+      "opportunistic_encryption": true,
+      "automatic_https_rewrites": true
+    },
+    
+    "firewall": {
+      "enabled": true,
+      "rules": [
+        {
+          "name": "Block malicious bots",
+          "expression": "(cf.bot_management.score < 30)",
+          "action": "challenge"
+        },
+        {
+          "name": "Rate limiting",
+          "expression": "(cf.threat_score > 50)",
+          "action": "block"
+        },
+        {
+          "name": "Block SQL injection",
+          "expression": "(cf.waf.score > 50)",
+          "action": "block"
+        }
+      ]
+    },
+    
+    "ddos_protection": {
+      "enabled": true,
+      "sensitivity_level": "high"
+    },
+    
+    "bot_management": {
+      "enabled": true,
+      "fight_mode": true,
+      "verified_bots_only": false
+    },
+    
+    "turnstile": {
+      "enabled": true,
+      "site_key": "YOUR_TURNSTILE_SITE_KEY",
+      "secret_key": "YOUR_TURNSTILE_SECRET_KEY"
+    }
+  },
+  
+  "performance": {
+    "caching": {
+      "browser_cache_ttl": 14400,
+      "cache_level": "cache_everything",
+      "edge_cache_ttl": 604800,
+      "cache_on_cookie": "session_id"
+    },
+    
+    "compression": {
+      "brotli": true,
+      "gzip": true
+    },
+    
+    "minification": {
+      "javascript": true,
+      "css": true,
+      "html": true
+    },
+    
+    "image_optimization": {
+      "enabled": true,
+      "format": "webp",
+      "quality": 85
+    },
+    
+    "rocket_loader": {
+      "enabled": true
+    },
+    
+    "lazy_loading": {
+      "enabled": true
+    }
+  },
+  
+  "workers": {
+    "enabled": true,
+    "routes": [
+      {
+        "pattern": "feispla.vercel.app/*",
+        "script": "feiss-knowledge"
+      }
+    ]
+  },
+  
+  "analytics": {
+    "enabled": true,
+    "web_analytics": true,
+    "bot_analytics": true
+  },
+  
+  "dns_records": [
+    {
+      "type": "CNAME",
+      "name": "feispla",
+      "content": "cname.vercel-dns.com",
+      "ttl": 3600,
+      "proxied": true
+    }
+  ],
+  
+  "page_rules": [
+    {
+      "targets": ["feispla.vercel.app/api/*"],
+      "actions": {
+        "cache_level": "bypass",
+        "security_level": "high",
+        "browser_cache_ttl": 0
+      }
+    },
+    {
+      "targets": ["feispla.vercel.app/static/*"],
+      "actions": {
+        "cache_level": "cache_everything",
+        "browser_cache_ttl": 2592000,
+        "edge_cache_ttl": 31536000
+      }
+    }
+  ],
+  
+  "headers": {
+    "security": [
+      {
+        "key": "X-Content-Type-Options",
+        "value": "nosniff"
+      },
+      {
+        "key": "X-Frame-Options",
+        "value": "DENY"
+      },
+      {
+        "key": "X-XSS-Protection",
+        "value": "1; mode=block"
+      },
+      {
+        "key": "Referrer-Policy",
+        "value": "strict-origin-when-cross-origin"
+      },
+      {
+        "key": "Strict-Transport-Security",
+        "value": "max-age=31536000; includeSubDomains; preload"
+      },
+      {
+        "key": "Content-Security-Policy",
+        "value": "default-src 'self'; script-src 'self' 'unsafe-inline' cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' cdnjs.cloudflare.com; img-src 'self' data: https:; font-src 'self' cdnjs.cloudflare.com;"
+      }
+    ]
+  },
+  
+  "kv_namespaces": [
+    {
+      "binding": "SESSIONS",
+      "id": "YOUR_KV_NAMESPACE_ID",
+      "preview_id": "YOUR_KV_PREVIEW_ID"
+    },
+    {
+      "binding": "CACHE",
+      "id": "YOUR_CACHE_NAMESPACE_ID",
+      "preview_id": "YOUR_CACHE_PREVIEW_ID"
+    }
+  ],
+  
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "feiss_db",
+      "database_id": "YOUR_D1_DATABASE_ID"
+    }
+  ],
+  
+  "r2_buckets": [
+    {
+      "binding": "BUCKET",
+      "bucket_name": "feiss-storage",
+      "jurisdiction": "eu"
+    }
+  ]
+}

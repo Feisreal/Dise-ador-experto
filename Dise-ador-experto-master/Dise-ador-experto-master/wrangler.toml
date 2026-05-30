@@ -1,0 +1,81 @@
+name = "feiss-knowledge"
+type = "javascript"
+account_id = "YOUR_CLOUDFLARE_ACCOUNT_ID"
+workers_dev = true
+route = "feispla.vercel.app/*"
+zone_id = "YOUR_CLOUDFLARE_ZONE_ID"
+
+[env.production]
+name = "feiss-knowledge-prod"
+route = "feispla.vercel.app/*"
+zone_id = "YOUR_CLOUDFLARE_ZONE_ID"
+
+[build]
+command = "npm install"
+cwd = "./"
+watch_paths = ["src/**/*.js"]
+
+[build.upload]
+format = "modules"
+main = "./src/index.js"
+
+[[build.upload.rules]]
+type = "CompiledContentType"
+globs = ["**/*.wasm"]
+fallthrough = true
+
+[env.production.routes]
+pattern = "feispla.vercel.app/*"
+zone_id = "YOUR_CLOUDFLARE_ZONE_ID"
+
+# Configuración de KV para almacenamiento de sesiones
+[[kv_namespaces]]
+binding = "SESSIONS"
+id = "YOUR_KV_NAMESPACE_ID"
+preview_id = "YOUR_KV_PREVIEW_ID"
+
+[[kv_namespaces]]
+binding = "CACHE"
+id = "YOUR_CACHE_NAMESPACE_ID"
+preview_id = "YOUR_CACHE_PREVIEW_ID"
+
+# Configuración de D1 para base de datos
+[[d1_databases]]
+binding = "DB"
+database_name = "feiss_db"
+database_id = "YOUR_D1_DATABASE_ID"
+
+# Configuración de R2 para almacenamiento de archivos
+[[r2_buckets]]
+binding = "BUCKET"
+bucket_name = "feiss-storage"
+jurisdiction = "eu"
+
+# Variables de entorno
+[env.production.vars]
+ENVIRONMENT = "production"
+API_URL = "https://feispla.vercel.app"
+DOMAIN = "feispla.vercel.app"
+
+# Secretos (deben ser configurados manualmente)
+[env.production.secrets]
+STRIPE_SECRET_KEY = "sk_live_YOUR_STRIPE_SECRET_KEY"
+STRIPE_WEBHOOK_SECRET = "whsec_YOUR_WEBHOOK_SECRET"
+GMAIL_API_KEY = "YOUR_GMAIL_API_KEY"
+GOOGLE_CALENDAR_API_KEY = "YOUR_GOOGLE_CALENDAR_API_KEY"
+NOTION_API_KEY = "YOUR_NOTION_API_KEY"
+ZAPIER_WEBHOOK_URL = "YOUR_ZAPIER_WEBHOOK_URL"
+EMAIL_USER = "YOUR_EMAIL_USER"
+EMAIL_PASSWORD = "YOUR_EMAIL_PASSWORD"
+
+# Configuración de Turnstile (CAPTCHA de Cloudflare)
+[env.production.vars]
+TURNSTILE_SITE_KEY = "YOUR_TURNSTILE_SITE_KEY"
+
+# Configuración de Analytics
+[analytics]
+enabled = true
+
+# Configuración de Observabilidad
+[observability]
+enabled = true
