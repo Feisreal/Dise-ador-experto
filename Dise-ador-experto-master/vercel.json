@@ -1,0 +1,77 @@
+{
+  "version": 2,
+  "name": "feiss-knowledge",
+  "builds": [
+    {
+      "src": "server.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "public/**",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/server.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/public/$1"
+    }
+  ],
+  "env": {
+    "STRIPE_PUBLIC_KEY": "@stripe_public_key",
+    "STRIPE_SECRET_KEY": "@stripe_secret_key",
+    "STRIPE_WEBHOOK_SECRET": "@stripe_webhook_secret",
+    "EMAIL_USER": "@email_user",
+    "EMAIL_PASSWORD": "@email_password",
+    "NOTION_SUPPORT_DB_ID": "@notion_support_db_id",
+    "NOTION_DOCS_DB_ID": "@notion_docs_db_id",
+    "ZAPIER_WEBHOOK_URL": "@zapier_webhook_url",
+    "CLOUDFLARE_ACCOUNT_ID": "@cloudflare_account_id",
+    "CLOUDFLARE_API_TOKEN": "@cloudflare_api_token",
+    "CLOUDFLARE_ZONE_ID": "@cloudflare_zone_id",
+    "CLOUDFLARE_TURNSTILE_SITE_KEY": "@cloudflare_turnstile_site_key",
+    "CLOUDFLARE_TURNSTILE_SECRET_KEY": "@cloudflare_turnstile_secret_key"
+  },
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Strict-Transport-Security",
+          "value": "max-age=31536000; includeSubDomains; preload"
+        },
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' cdnjs.cloudflare.com; img-src 'self' data: https:; font-src 'self' cdnjs.cloudflare.com;"
+        }
+      ]
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/docs",
+      "destination": "/documentation",
+      "permanent": true
+    }
+  ]
+}

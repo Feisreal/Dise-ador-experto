@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="FEISS - Documentación técnica profesional con pagos seguros por Stripe y PayPal">
+    <title>FEISS - Compra Segura con Stripe y PayPal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://js.stripe.com/v3/"></script>
+    <script src="https://www.paypal.com/sdk/js?client-id=YOUR_PAYPAL_CLIENT_ID"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #0f172a;
+            --secondary: #1e293b;
+            --accent: #f59e0b;
+            --accent-dark: #d97706;
+            --success: #10b981;
+            --error: #ef4444;
+            --text: #1f2937;
+            --text-light: #6b7280;
+            --border: #e5e7eb;
+            --bg-light: #f9fafb;
+            --bg-white: #ffffff;
+        }
+
+        body {
+            font-family: 'Geist', sans-serif;
+            color: var(--text);
+            line-height: 1.6;
+            background: var(--bg-white);
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .logo span {
+            color: var(--accent);
+        }
+
+        /* Pricing Section */
+        .pricing {
+            padding: 5rem 2rem;
+            background: var(--bg-light);
+        }
+
+        .section-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: var(--text-light);
+            margin-bottom: 3rem;
+            font-size: 1.1rem;
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .pricing-card {
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            transition: all 0.3s;
+        }
+
+        .pricing-card.featured {
+            border-color: var(--accent);
+            box-shadow: 0 12px 24px rgba(245, 158, 11, 0.2);
+            transform: scale(1.05);
+        }
+
+        .pricing-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+
+        .price {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .price-period {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+        }
+
+        .btn {
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            width: 100%;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--accent);
+            margin-top: 0.5rem;
+        }
+
+        .btn-secondary:hover {
+            background: var(--accent);
+            color: white;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background-color: var(--bg-white);
+            margin: 5% auto;
+            padding: 2rem;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            animation: slideIn 0.3s;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .close {
+            color: var(--text-light);
+            float: right;
+            font-size: 2rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .modal-header {
+            margin-bottom: 2rem;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 1rem;
+        }
+
+        .modal-header h2 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-price {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--accent);
+        }
+
+        /* Payment Method Tabs */
+        .payment-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .payment-tab {
+            padding: 1rem;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text-light);
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .payment-tab.active {
+            color: var(--accent);
+            border-bottom-color: var(--accent);
+        }
+
+        .payment-content {
+            display: none;
+        }
+
+        .payment-content.active {
+            display: block;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        input[type="text"],
+        input[type="email"] {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 1rem;
+            font-family: 'Geist', sans-serif;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+        }
+
+        #card-element {
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.75rem;
+            background: white;
+        }
+
+        #paypal-button-container {
+            margin-top: 1.5rem;
+        }
+
+        .error-message {
+            color: var(--error);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .success-message {
+            background: #d1fae5;
+            border: 1px solid var(--success);
+            color: #065f46;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 1rem;
+        }
+
+        .spinner {
+            border: 3px solid var(--border);
+            border-top: 3px solid var(--accent);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Footer */
+        footer {
+            background: var(--primary);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+
+        .footer-bottom {
+            color: #9ca3af;
+        }
+
+        @media (max-width: 768px) {
+            .section-title {
+                font-size: 1.8rem;
+            }
+
+            .pricing-card.featured {
+                transform: scale(1);
+            }
+
+            .modal-content {
+                width: 95%;
+                margin: 20% auto;
+            }
+
+            .payment-tabs {
+                flex-direction: column;
+            }
+        }
+    </style>
+
+    <!-- Vercel Web Analytics -->
+    <script>
+        window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+    </script>
+    <script defer src="/_vercel/insights/script.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <div class="logo">FEISS<span>.</span></div>
+        </div>
+    </header>
+
+    <!-- Pricing Section -->
+    <section class="pricing">
+        <div class="section-container">
+            <h2 class="section-title">Planes de Precios</h2>
+            <p class="section-subtitle">Elige tu plan y paga con Stripe o PayPal</p>
+            
+            <div class="pricing-grid">
+                <!-- Plan Básico -->
+                <div class="pricing-card">
+                    <h3>Básico</h3>
+                    <div class="price">$299</div>
+                    <p class="price-period">Acceso de por vida</p>
+                    <button class="btn btn-primary" onclick="openCheckout('Básico', 299, 'basic')">
+                        Comprar Ahora
+                    </button>
+                </div>
+
+                <!-- Plan Profesional -->
+                <div class="pricing-card featured">
+                    <h3>Profesional</h3>
+                    <div class="price">$799</div>
+                    <p class="price-period">Acceso de por vida</p>
+                    <button class="btn btn-primary" onclick="openCheckout('Profesional', 799, 'professional')">
+                        Comprar Ahora
+                    </button>
+                </div>
+
+                <!-- Plan Enterprise -->
+                <div class="pricing-card">
+                    <h3>Enterprise</h3>
+                    <div class="price">$2,499</div>
+                    <p class="price-period">Acceso de por vida</p>
+                    <button class="btn btn-primary" onclick="openCheckout('Enterprise', 2499, 'enterprise')">
+                        Comprar Ahora
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Checkout Modal -->
+    <div id="checkoutModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeCheckout()">&times;</span>
+            <div class="modal-header">
+                <h2 id="planName">Plan Básico</h2>
+                <div class="modal-price" id="planPrice">$299</div>
+            </div>
+
+            <div class="success-message" id="successMessage">
+                <i class="fas fa-check-circle"></i> Pago procesado exitosamente. Acceso concedido.
+            </div>
+
+            <!-- Payment Method Tabs -->
+            <div class="payment-tabs">
+                <button class="payment-tab active" onclick="switchPaymentMethod('stripe')">
+                    <i class="fab fa-stripe"></i> Stripe
+                </button>
+                <button class="payment-tab" onclick="switchPaymentMethod('paypal')">
+                    <i class="fab fa-paypal"></i> PayPal
+                </button>
+            </div>
+
+            <!-- Stripe Payment -->
+            <div id="stripe-content" class="payment-content active">
+                <form id="stripeForm" onsubmit="handleStripePayment(event)">
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" required placeholder="tu@email.com">
+                        <div class="error-message" id="emailError"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="fullName">Nombre Completo</label>
+                        <input type="text" id="fullName" name="fullName" required placeholder="Juan García">
+                        <div class="error-message" id="nameError"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Tarjeta de Crédito</label>
+                        <div id="card-element"></div>
+                        <div class="error-message" id="cardError"></div>
+                    </div>
+
+                    <div class="loading" id="stripeLoading">
+                        <div class="spinner"></div>
+                        <p>Procesando pago...</p>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" id="stripeSubmitBtn">
+                        Pagar $<span id="stripeAmount">299</span>
+                    </button>
+                </form>
+            </div>
+
+            <!-- PayPal Payment -->
+            <div id="paypal-content" class="payment-content">
+                <form id="paypalForm">
+                    <div class="form-group">
+                        <label for="paypalEmail">Email</label>
+                        <input type="email" id="paypalEmail" name="email" required placeholder="tu@email.com">
+                        <div class="error-message" id="paypalEmailError"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="paypalName">Nombre Completo</label>
+                        <input type="text" id="paypalName" name="fullName" required placeholder="Juan García">
+                        <div class="error-message" id="paypalNameError"></div>
+                    </div>
+
+                    <div id="paypal-button-container"></div>
+                    <div class="error-message" id="paypalError"></div>
+                </form>
+            </div>
+
+            <p style="font-size: 0.85rem; color: var(--text-light); margin-top: 1rem; text-align: center;">
+                <i class="fas fa-lock"></i> Pagos seguros procesados por Stripe y PayPal
+            </p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-bottom">
+            <p>&copy; 2026 FEISS. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Configuration
+        const STRIPE_PUBLIC_KEY = 'pk_test_51TLY0pANerrLo3hFAUQLaymKbmPGuaG1SbXf0dXp2BJ734TaEFVSzEGaZNKVAfyUG96EeHRyXAQMxLPxlCgW6IgN00YncMXH19';
+        const PAYPAL_CLIENT_ID = 'YOUR_PAYPAL_CLIENT_ID_HERE';
+        
+        let stripe = null;
+        let elements = null;
+        let cardElement = null;
+        let currentPlan = null;
+        let currentPrice = null;
+        let currentPlanId = null;
+
+        // Initialize Stripe
+        function initializeStripe() {
+            try {
+                stripe = Stripe(STRIPE_PUBLIC_KEY);
+                elements = stripe.elements();
+                cardElement = elements.create('card');
+                cardElement.mount('#card-element');
+                
+                cardElement.addEventListener('change', function(event) {
+                    const displayError = document.getElementById('cardError');
+                    if (event.error) {
+                        displayError.textContent = event.error.message;
+                        displayError.classList.add('show');
+                    } else {
+                        displayError.textContent = '';
+                        displayError.classList.remove('show');
+                    }
+                });
+            } catch (error) {
+                console.error('Error initializing Stripe:', error);
+            }
+        }
+
+        // Initialize PayPal
+        function initializePayPal() {
+            if (typeof paypal !== 'undefined') {
+                paypal.Buttons({
+                    createOrder: async (data, actions) => {
+                        const email = document.getElementById('paypalEmail').value;
+                        const fullName = document.getElementById('paypalName').value;
+
+                        if (!email || !fullName) {
+                            alert('Por favor completa todos los campos');
+                            return;
+                        }
+
+                        try {
+                            const response = await fetch('/api/create-paypal-order', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    amount: currentPrice,
+                                    email: email,
+                                    fullName: fullName,
+                                    planId: currentPlanId,
+                                    planName: currentPlan
+                                })
+                            });
+
+                            const data = await response.json();
+                            return data.orderId;
+                        } catch (error) {
+                            console.error('Error creating PayPal order:', error);
+                            alert('Error al crear orden en PayPal');
+                        }
+                    },
+                    onApprove: async (data, actions) => {
+                        try {
+                            const response = await fetch('/api/capture-paypal-order', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    orderId: data.orderID,
+                                    email: document.getElementById('paypalEmail').value,
+                                    fullName: document.getElementById('paypalName').value,
+                                    planId: currentPlanId,
+                                    planName: currentPlan,
+                                    amount: currentPrice
+                                })
+                            });
+
+                            const result = await response.json();
+                            if (result.success) {
+                                document.getElementById('successMessage').classList.add('show');
+                                setTimeout(() => {
+                                    alert('¡Pago exitoso! Acceso concedido.');
+                                    closeCheckout();
+                                }, 2000);
+                            }
+                        } catch (error) {
+                            console.error('Error capturing PayPal order:', error);
+                            alert('Error al procesar pago');
+                        }
+                    },
+                    onError: (err) => {
+                        console.error('PayPal error:', err);
+                        document.getElementById('paypalError').textContent = 'Error en PayPal. Intenta de nuevo.';
+                        document.getElementById('paypalError').classList.add('show');
+                    }
+                }).render('#paypal-button-container');
+            }
+        }
+
+        // Open Checkout
+        function openCheckout(planName, price, planId) {
+            currentPlan = planName;
+            currentPrice = price;
+            currentPlanId = planId;
+
+            document.getElementById('planName').textContent = planName;
+            document.getElementById('planPrice').textContent = '$' + price;
+            document.getElementById('stripeAmount').textContent = price;
+            document.getElementById('checkoutModal').style.display = 'block';
+            document.getElementById('successMessage').classList.remove('show');
+
+            document.getElementById('stripeForm').reset();
+            if (cardElement) cardElement.clear();
+
+            initializeStripe();
+            initializePayPal();
+        }
+
+        // Close Checkout
+        function closeCheckout() {
+            document.getElementById('checkoutModal').style.display = 'none';
+            if (cardElement) cardElement.clear();
+        }
+
+        // Switch Payment Method
+        function switchPaymentMethod(method) {
+            // Update tabs
+            document.querySelectorAll('.payment-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.closest('.payment-tab').classList.add('active');
+
+            // Update content
+            document.querySelectorAll('.payment-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(method + '-content').classList.add('active');
+        }
+
+        // Handle Stripe Payment
+        async function handleStripePayment(event) {
+            event.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const fullName = document.getElementById('fullName').value;
+
+            if (!email || !fullName) {
+                alert('Por favor completa todos los campos');
+                return;
+            }
+
+            document.getElementById('stripeLoading').style.display = 'block';
+            document.getElementById('stripeSubmitBtn').disabled = true;
+
+            try {
+                const { paymentMethod, error } = await stripe.createPaymentMethod({
+                    type: 'card',
+                    card: cardElement,
+                    billing_details: { email: email, name: fullName }
+                });
+
+                if (error) {
+                    document.getElementById('cardError').textContent = error.message;
+                    document.getElementById('cardError').classList.add('show');
+                    throw error;
+                }
+
+                const response = await fetch('/api/create-payment-intent', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        paymentMethodId: paymentMethod.id,
+                        amount: currentPrice * 100,
+                        email: email,
+                        fullName: fullName,
+                        planId: currentPlanId,
+                        planName: currentPlan
+                    })
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    document.getElementById('successMessage').classList.add('show');
+                    setTimeout(() => {
+                        alert('¡Pago exitoso! Acceso concedido.');
+                        closeCheckout();
+                    }, 2000);
+                } else {
+                    throw new Error(result.message);
+                }
+            } catch (error) {
+                console.error('Payment error:', error);
+                alert('Error al procesar pago: ' + error.message);
+            } finally {
+                document.getElementById('stripeLoading').style.display = 'none';
+                document.getElementById('stripeSubmitBtn').disabled = false;
+            }
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('checkoutModal');
+            if (event.target == modal) {
+                closeCheckout();
+            }
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeStripe();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="FEISS Showcase Store - Documentación técnica profesional, guía de implementación y roadmap de desarrollo para e-commerce moderno.">
+    <meta name="keywords" content="e-commerce, React, TypeScript, Tailwind CSS, desarrollo web, tienda online">
+    <meta name="author" content="FEISS Team">
+    <title>FEISS Showcase Store - La Web Definitiva</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Estilos base (pueden ser los mismos que en index.html o mejorados con Tailwind) */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #0f172a;
+            --secondary: #1e293b;
+            --accent: #f59e0b;
+            --accent-dark: #d97706;
+            --success: #10b981;
+            --text: #1f2937;
+            --text-light: #6b7280;
+            --border: #e5e7eb;
+            --bg-light: #f9fafb;
+            --bg-white: #ffffff;
+        }
+
+        body {
+            font-family: 'Geist', sans-serif;
+            color: var(--text);
+            line-height: 1.6;
+            background: var(--bg-white);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .logo span {
+            color: var(--accent);
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin-left: 2rem;
+            font-size: 0.95rem;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: var(--accent);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 6rem 2rem;
+            text-align: center;
+        }
+
+        .hero-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .hero .subtitle {
+            font-size: 1.3rem;
+            color: #d1d5db;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 3rem;
+        }
+
+        .btn {
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: var(--primary);
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(245, 158, 11, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn-secondary:hover {
+            background: white;
+            color: var(--primary);
+        }
+
+        /* Secciones de Contenido */
+        .section {
+            padding: 5rem 2rem;
+        }
+
+        .section-light {
+            background: var(--bg-light);
+        }
+
+        .section-dark {
+            background: var(--primary);
+            color: white;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .section-dark .section-title {
+            color: white;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: var(--text-light);
+            margin-bottom: 3rem;
+            font-size: 1.1rem;
+        }
+
+        .section-dark .section-subtitle {
+            color: #d1d5db;
+        }
+
+        .grid-3-cols {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.1);
+        }
+
+        .card-dark {
+            background: var(--secondary);
+            color: white;
+            border-color: rgba(255,255,255,0.2);
+        }
+
+        .card-dark:hover {
+            box-shadow: 0 12px 24px rgba(0,0,0,0.3);
+        }
+
+        .card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+
+        .card-dark h3 {
+            color: white;
+        }
+
+        .card p {
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        .card-dark p {
+            color: #d1d5db;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--primary);
+            color: white;
+            padding: 3rem 0;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        footer a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <div class="logo">FEISS<span>.</span></div>
+            <nav>
+                <a href="#inicio">Inicio</a>
+                <a href="#servicios">Servicios</a>
+                <a href="#integraciones">Integraciones API</a>
+                <a href="#documentacion">Documentación</a>
+                <a href="#contacto">Contacto</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section id="inicio" class="hero">
+            <div class="hero-container">
+                <h1>Bienvenido a FEISS Showcase Store</h1>
+                <p class="subtitle">Tu plataforma definitiva para soluciones de e-commerce y gestión de conocimiento.</p>
+                <div class="cta-buttons">
+                    <a href="#servicios" class="btn btn-primary">Explorar Servicios</a>
+                    <a href="#contacto" class="btn btn-secondary">Contactar Ventas</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="servicios" class="section section-light">
+            <div class="container">
+                <h2 class="section-title">Nuestros Servicios</h2>
+                <p class="section-subtitle">Ofrecemos soluciones integrales para potenciar tu negocio digital.</p>
+                <div class="grid-3-cols">
+                    <div class="card">
+                        <h3>Gestión de Pagos</h3>
+                        <p>Procesa transacciones de forma segura y eficiente con nuestra integración Stripe.</p>
+                    </div>
+                    <div class="card">
+                        <h3>Automatización de Marketing</h3>
+                        <p>Conecta con tus clientes a través de campañas automatizadas y personalizadas.</p>
+                    </div>
+                    <div class="card">
+                        <h3>Soporte al Cliente Inteligente</h3>
+                        <p>Ofrece respuestas rápidas y organiza las consultas con nuestra base de conocimiento.</p>
+                    </div>
+                    <div class="card">
+                        <h3>Programación de Citas</h3>
+                        <p>Simplifica la gestión de reuniones y demostraciones con calendarios integrados.</p>
+                    </div>
+                    <div class="card">
+                        <h3>Análisis de Datos Avanzado</h3>
+                        <p>Obtén insights valiosos de tus operaciones y el comportamiento del usuario.</p>
+                    </div>
+                    <div class="card">
+                        <h3>Integración de Contenido</h3>
+                        <p>Gestiona tu documentación y contenido web de forma dinámica y centralizada.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="integraciones" class="section section-dark">
+            <div class="container">
+                <h2 class="section-title">Nuestras Integraciones API</h2>
+                <p class="section-subtitle">Conectamos con las mejores herramientas para una funcionalidad sin límites.</p>
+                <div class="grid-3-cols">
+                    <div class="card card-dark">
+                        <h3>Gmail & Outlook Mail</h3>
+                        <p>Gestión avanzada de correo electrónico para comunicaciones y soporte.</p>
+                    </div>
+                    <div class="card card-dark">
+                        <h3>Google & Outlook Calendar</h3>
+                        <p>Programación y gestión de eventos y citas de forma eficiente.</p>
+                    </div>
+                    <div class="card card-dark">
+                        <h3>Notion</h3>
+                        <p>Base de conocimiento dinámica y gestión de documentación centralizada.</p>
+                    </div>
+                    <div class="card card-dark">
+                        <h3>Zapier & Apify</h3>
+                        <p>Automatización de flujos de trabajo y extracción de datos web.</p>
+                    </div>
+                    <div class="card card-dark">
+                        <h3>Alpha Vantage & MotherDuck</h3>
+                        <p>Datos financieros en tiempo real y análisis de datos avanzado.</p>
+                    </div>
+                    <div class="card card-dark">
+                        <h3>Amplitude & Meta Ads</h3>
+                        <p>Análisis de producto, marketing y gestión de campañas publicitarias.</p>
+                    </div>
+                    <div class="card card-dark">
+                        <h3>Hume AI & Neimo</h3>
+                        <p>Análisis de emociones e inteligencia regulatoria.</p>
+                    </div>
+                    <div class="card card-dark">
+                        <h3>Scite & Consensus</h3>
+                        <p>Investigación académica y citas científicas.</p>
+                    </div>
+                    <div class="card card-dark">
+                        <h3>Instagram, GitHub, Vercel & LINE</h3>
+                        <p>Gestión de redes sociales, control de versiones y despliegue continuo.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="documentacion" class="section section-light">
+            <div class="container">
+                <h2 class="section-title">Documentación y Recursos</h2>
+                <p class="section-subtitle">Accede a guías detalladas, tutoriales y nuestra base de conocimiento.</p>
+                <div class="grid-3-cols">
+                    <div class="card">
+                        <h3>Guías de Implementación</h3>
+                        <p>Instrucciones paso a paso para integrar FEISS en tu negocio.</p>
+                    </div>
+                    <div class="card">
+                        <h3>Tutoriales en Video</h3>
+                        <p>Aprende visualmente cómo usar todas las funcionalidades de la plataforma.</p>
+                    </div>
+                    <div class="card">
+                        <h3>Preguntas Frecuentes (FAQ)</h3>
+                        <p>Encuentra respuestas rápidas a las dudas más comunes.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="contacto" class="section section-dark">
+            <div class="container">
+                <h2 class="section-title">Contáctanos</h2>
+                <p class="section-subtitle">¿Tienes preguntas? Estamos aquí para ayudarte.</p>
+                <div style="max-width: 600px; margin: 0 auto;">
+                    <form style="display: flex; flex-direction: column; gap: 1rem;">
+                        <input type="text" placeholder="Tu Nombre" style="padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border);">
+                        <input type="email" placeholder="Tu Correo Electrónico" style="padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border);">
+                        <textarea placeholder="Tu Mensaje" rows="5" style="padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border);"></textarea>
+                        <button type="submit" class="btn btn-primary" style="width: auto; align-self: flex-start;">Enviar Mensaje</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 FEISS. Todos los derechos reservados. | <a href="#">Política de Privacidad</a> | <a href="#">Términos de Servicio</a></p>
+        </div>
+    </footer>
+</body>
+</html>
